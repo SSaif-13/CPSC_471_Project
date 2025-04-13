@@ -19,6 +19,7 @@
     margin-top: 15px;
     padding-bottom: 0px;
     text-align: left;
+    display: flex;
 }
 
 .information {
@@ -26,4 +27,58 @@
     padding-top: 0;
     padding-bottom: 0px;
     text-align: left;
+}
+
+.navigation {
+    margin: 0;
+    color: white;
+    padding-top: 0;
+    padding-bottom: 0px;
+    text-align: left;
+}
+
+.navigation a {
+    color: white;
+}
+
+.navigation a:hover {
+    color: rgb(193, 192, 192);
+}
+
+.content {
+    margin-top: 15px;
+    padding-bottom: 0px;
+    text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.text {
+    flex: 1;
+    margin-right: 20px;
+}
+
+.image {
+    max-width: 60%;
+    height: auto;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+
+.gallery {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.impact-item {
+    flex: 1;
+    /* Each item takes equal space */
+    text-align: center;
+    /* Centers the text underneath each image */
+    margin: 0 10px;
+    /* Adds spacing between items */
 }
