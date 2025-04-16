@@ -5,11 +5,11 @@ import { Link } from 'react-router-dom';
 const Calculator = () => {
   return (
     <>
-      <div className="AboutUs-container">
+      <div className="Calculator-container">
         {/* Header */}
         <div>
           <div className="header">
-            <h1 className="navbar-brand">About Us</h1>
+            <h1 className="navbar-brand">Carbon Footprint Calculator</h1>
             <div className="navigation">
               <ul className="unordered-list">
                 <li>

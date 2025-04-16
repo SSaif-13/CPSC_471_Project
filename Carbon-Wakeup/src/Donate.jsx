@@ -5,11 +5,11 @@ import { Link } from 'react-router-dom';
 const Donate = () => {
   return (
     <>
-      <div className="AboutUs-container">
+      <div className="Donate-container">
         {/* Header */}
         <div>
           <div className="header">
-            <h1 className="navbar-brand">About Us</h1>
+            <h1 className="navbar-brand">Donate</h1>
             <div className="navigation">
               <ul className="unordered-list">
                 <li>
