@@ -103,9 +103,27 @@ const Calculator = () => {
   return (
     <div className="min-h-screen flex items-center justify-center p-5 flex-col bg-gray-100">
       {/* Navigation */}
-      <div className="w-full max-w-screen-lg bg-white shadow-md mb-8">
-        <div className="header p-4">
-          <h1 className="text-2xl font-bold">Carbon Footprint Calculator</h1>
+      <div className="Calculator-container">
+        <div className="header">
+        <h1 className="navbar-brand">Carbon Footprint Calculator</h1>
+          <div className="navigation">
+              <ul className="unordered-list">
+                <li>
+                  <Link to="/">Homepage</Link>
+                </li>
+                <li>
+                  <Link to="/about">About Us</Link>
+                </li>
+                <li> <Link to="/compare"> Compare Carbon Emissions </Link> </li>
+
+                <li>
+                  <Link to="/donate">Donate</Link>
+                </li>
+                <li>
+                  <Link to="/login">Login</Link>
+                </li>
+              </ul>
+            </div>
         </div>
       </div>
 
