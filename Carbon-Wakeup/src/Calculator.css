@@ -1,0 +1,126 @@
+  .calculator-content {
+    display: flex;
+    flex-direction: row;
+    gap: 3rem;
+    align-items: flex-start;
+    width: 100%;
+  }
+  
+  /* Form section */
+  .calculator-form-section {
+    flex: 1;
+  }
+  
+  .form-title {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .calculator-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .form-group label {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+  
+  .form-group span {
+    font-size: 0.9rem;
+    color: #444;
+    margin-bottom: 0.25rem;
+  }
+  
+  input[type="range"] {
+    width: 100%;
+  }
+  
+  select {
+    padding: 0.4rem;
+    font-size: 1rem;
+  }
+  
+  .submit-button {
+    margin-top: 1rem;
+    padding: 0.6rem 1.2rem;
+    font-size: 1rem;
+    background-color: #28a745;
+    border: none;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .submit-button:hover {
+    background-color: #218838;
+  }
+  
+  /* Results section stuff*/
+  .calculator-chart{
+    height: 500px;
+  }
+
+  .results-section {
+    flex: 1.2;
+  }
+  
+  .results-title {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .results-details {
+    margin-top: 1rem;
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+  }
+  
+  .total-emissions {
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-top: 1rem;
+  }
+  
+  /* Suggestions */
+  .suggestions-section {
+    margin-top: 2rem;
+  }
+  
+  .suggestions-title {
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .suggestion-card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    padding: 1rem;
+    margin-top: 1rem;
+    border-radius: 8px;
+  }
+  
+  .suggestion-category {
+    font-weight: bold;
+    margin-bottom: 0.3rem;
+  }
+  
+  .suggestion-message {
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  
+  .suggestion-tips {
+    margin: 0;
+    padding-left: 1.2rem;
+  }
+  

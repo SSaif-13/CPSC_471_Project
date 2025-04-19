@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Bar } from 'react-chartjs-2';
 import { Chart, registerables } from 'chart.js';
+import './Calculator.css';
+
 
 Chart.register(...registerables);
 
@@ -45,6 +47,7 @@ const Calculator = () => {
   });
 
   const chartOptions = {
+    maintainAspectRatio: false,
     scales: { y: { beginAtZero: true } },
   };
 
@@ -100,80 +103,143 @@ const Calculator = () => {
     }
   };
 
+  const generateSuggestions = (result) => {
+    const suggestions = [];
+
+    if (!result) return suggestions;
+
+    // Electricity suggestion
+    if (result.yearlyElectricityEmissions.value > 3900) {
+      suggestions.push({
+        category: 'Electricity',
+        message: 'Your electricity emissions are high. Consider:',
+        tips: [
+          'Switch to LED light bulbs',
+          'Unplug devices when not in use',
+          'Use energy-efficient appliances',
+          'Consider solar panels if possible'
+        ]
+      });
+    }
+
+    // Driving suggestion
+    if (result.yearlyTransportationEmissions.value > 2150) {
+      suggestions.push({
+        category: 'Transportation',
+        message: 'Your driving emissions are high. Consider:',
+        tips: [
+          'Carpool or use public transportation',
+          'Combine errands to reduce trips',
+          'Consider an electric or hybrid vehicle',
+          'Walk or bike for short distances'
+        ]
+      });
+    }
+
+    // Natural Gas suggestion
+    if (result.yearlyNaturalGasEmissions.value > 5000) {
+      suggestions.push({
+        category: 'Natural Gas',
+        message: 'Your natural gas usage is high. Consider:',
+        tips: [
+          'Lower your thermostat by a few degrees',
+          'Insulate your home better',
+          'Use a programmable thermostat',
+          'Consider renewable heating options'
+        ]
+      });
+    }
+
+    // Dietary suggestion
+    if (result.dietaryChoiceEmissions.value > 1465) {
+      suggestions.push({
+        category: 'Diet',
+        message: 'Your dietary emissions are high. Consider:',
+        tips: [
+          'Reduce meat consumption',
+          'Choose locally sourced foods',
+          'Reduce food waste',
+          'Incorporate more plant-based meals'
+        ]
+      });
+    }
+
+    return suggestions;
+  };
+
+  
+
+
   return (
-    <div className="min-h-screen flex items-center justify-center p-5 flex-col bg-gray-100">
+    <div>
       {/* Navigation */}
       <div className="Calculator-container">
         <div className="header">
-        <h1 className="navbar-brand">Carbon Footprint Calculator</h1>
+          <h1 className="navbar-brand">Carbon Footprint Calculator</h1>
           <div className="navigation">
-              <ul className="unordered-list">
-                <li>
-                  <Link to="/">Homepage</Link>
-                </li>
-                <li>
-                  <Link to="/about">About Us</Link>
-                </li>
-                <li> <Link to="/compare"> Compare Carbon Emissions </Link> </li>
+            <ul className="unordered-list">
+              <li>
+                <Link to="/">Homepage</Link>
+              </li>
+              <li>
+                <Link to="/about">About Us</Link>
+              </li>
+              <li> <Link to="/compare"> Compare Carbon Emissions </Link> </li>
 
-                <li>
-                  <Link to="/donate">Donate</Link>
-                </li>
-                <li>
-                  <Link to="/login">Login</Link>
-                </li>
-              </ul>
-            </div>
+              <li>
+                <Link to="/donate">Donate</Link>
+              </li>
+              <li>
+                <Link to="/login">Login</Link>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
 
       {/* Calculator Content */}
-      <div className="flex flex-col md:flex-row gap-8 bg-white p-10 w-full max-w-screen-lg rounded-lg shadow-lg">
+      <div className="calculator-content">
         {/* Form */}
-        <div className="p-8 rounded-lg flex-1">
-          <h1 className="text-3xl font-bold mb-6 text-center">Carbon Footprint Calculator</h1>
-          <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="calculator-form-section">
+          <h1 className="form-title">Calculate Your Emissions</h1>
+          <form onSubmit={handleSubmit} className="calculator-form">
             {/* Electricity */}
-            <div className="flex justify-between items-center">
+            <div className="form-group">
               <label>Electricity Usage (kWh/Month):</label>
               <span>{formData.electricityUsageKWh} kWh</span>
+              <input type="range" min="0" max="1000" name="electricityUsageKWh"
+                value={formData.electricityUsageKWh} onChange={handleChange} />
             </div>
-            <input
-              type="range" min="0" max="100" name="electricityUsageKWh"
-              value={formData.electricityUsageKWh} onChange={handleChange} className="w-full" />
 
             {/* Driving */}
-            <div className="flex justify-between items-center">
+            <div className="form-group">
               <label>Distance Driven (km/Month):</label>
               <span>{formData.kmDrivenPerMonth} km</span>
+              <input type="range" min="0" max="10000" name="kmDrivenPerMonth"
+                value={formData.kmDrivenPerMonth} onChange={handleChange} />
             </div>
-            <input
-              type="range" min="0" max="1000" name="kmDrivenPerMonth"
-              value={formData.kmDrivenPerMonth} onChange={handleChange} className="w-full" />
 
             {/* Natural Gas */}
-            <div className="flex justify-between items-center">
+            <div className="form-group">
               <label>Natural Gas Usage (GJ/Month):</label>
               <span>{formData.naturalGasGJPerMonth} GJ</span>
+              <input type="range" min="0" max="100" name="naturalGasGJPerMonth"
+                value={formData.naturalGasGJPerMonth} onChange={handleChange} />
             </div>
-            <input
-              type="range" min="0" max="100" name="naturalGasGJPerMonth"
-              value={formData.naturalGasGJPerMonth} onChange={handleChange} className="w-full" />
 
             {/* Calories */}
-            <div className="flex justify-between items-center">
+            <div className="form-group">
               <label>Calories Eaten (per day):</label>
               <span>{formData.caloriesPerDay} kcal</span>
+              <input type="range" min="0" max="5000" name="caloriesPerDay"
+                value={formData.caloriesPerDay} onChange={handleChange} />
             </div>
-            <input
-              type="range" min="0" max="5000" name="caloriesPerDay"
-              value={formData.caloriesPerDay} onChange={handleChange} className="w-full" />
 
-            {/* Dietary */}
-            <div className="flex flex-col">
+            {/* Dietary Choice */}
+            <div className="form-group">
               <label>Dietary Choice:</label>
               <select name="dietaryChoice" value={formData.dietaryChoice}
-                onChange={handleChange} className="w-full">
+                onChange={handleChange}>
                 <option value="Vegan">Vegan</option>
                 <option value="Vegetarian">Vegetarian</option>
                 <option value="Pescatarian">Pescatarian</option>
@@ -181,23 +247,38 @@ const Calculator = () => {
               </select>
             </div>
 
-            <button type="submit" className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md">
-              Calculate
-            </button>
+            <button type="submit" className="submit-button">Calculate</button>
           </form>
         </div>
 
         {/* Results */}
-        <div className="p-8 rounded-lg flex-1">
-          <h1 className="text-3xl font-bold mb-2">Yearly Emissions Statistics</h1>
-          <Bar data={chartData} options={chartOptions} />
+        <div className="results-section">
+          <h1 className="results-title">Yearly Emissions Statistics</h1>
+          <div className="calculator-chart"><Bar data={chartData} options={chartOptions} /></div>
+          
           {result && (
-            <div className="mt-8">
-              <p className="font-bold">Electricity: {result.yearlyElectricityEmissions.value} {result.yearlyElectricityEmissions.unit}</p>
-              <p className="font-bold">Driving: {result.yearlyTransportationEmissions.value} {result.yearlyTransportationEmissions.unit}</p>
-              <p className="font-bold">Natural Gas: {result.yearlyNaturalGasEmissions.value} {result.yearlyNaturalGasEmissions.unit}</p>
-              <p className="font-bold">Dietary: {result.dietaryChoiceEmissions.value} {result.dietaryChoiceEmissions.unit}</p>
-              <p className="mt-4 font-bold">TOTAL: {result.totalYearlyEmissions.value} {result.totalYearlyEmissions.unit}</p>
+            <div className="results-details">
+              <p>Electricity: {result.yearlyElectricityEmissions.value} {result.yearlyElectricityEmissions.unit}</p>
+              <p>Driving: {result.yearlyTransportationEmissions.value} {result.yearlyTransportationEmissions.unit}</p>
+              <p>Natural Gas: {result.yearlyNaturalGasEmissions.value} {result.yearlyNaturalGasEmissions.unit}</p>
+              <p>Dietary: {result.dietaryChoiceEmissions.value} {result.dietaryChoiceEmissions.unit}</p>
+              <p className="total-emissions">TOTAL: {result.totalYearlyEmissions.value} {result.totalYearlyEmissions.unit}</p>
+
+              {/* Suggestions */}
+              <div className="suggestions-section">
+                <h2 className="suggestions-title">Suggestions for Improvement</h2>
+                {generateSuggestions(result).map((suggestion, index) => (
+                  <div key={index} className="suggestion-card">
+                    <h3 className="suggestion-category">{suggestion.category}</h3>
+                    <p className="suggestion-message">{suggestion.message}</p>
+                    <ul className="suggestion-tips">
+                      {suggestion.tips.map((tip, tipIndex) => (
+                        <li key={tipIndex}>{tip}</li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
         </div>
