@@ -258,11 +258,11 @@ const Calculator = () => {
           
           {result && (
             <div className="results-details">
-              <p>Electricity: {result.yearlyElectricityEmissions.value} {result.yearlyElectricityEmissions.unit}</p>
-              <p>Driving: {result.yearlyTransportationEmissions.value} {result.yearlyTransportationEmissions.unit}</p>
-              <p>Natural Gas: {result.yearlyNaturalGasEmissions.value} {result.yearlyNaturalGasEmissions.unit}</p>
+              <p>Electricity: {result.yearlyElectricityEmissions.value.toFixed(2)} {result.yearlyElectricityEmissions.unit}</p>
+              <p>Driving: {result.yearlyTransportationEmissions.value.toFixed(2)} {result.yearlyTransportationEmissions.unit}</p>
+              <p>Natural Gas: {result.yearlyNaturalGasEmissions.value.toFixed(2)} {result.yearlyNaturalGasEmissions.unit}</p>
               <p>Dietary: {result.dietaryChoiceEmissions.value} {result.dietaryChoiceEmissions.unit}</p>
-              <p className="total-emissions">TOTAL: {result.totalYearlyEmissions.value} {result.totalYearlyEmissions.unit}</p>
+              <p className="total-emissions">TOTAL: {result.totalYearlyEmissions.value.toFixed(2)} {result.totalYearlyEmissions.unit}</p>
 
               {/* Suggestions */}
               <div className="suggestions-section">
