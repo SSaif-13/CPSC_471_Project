@@ -94,6 +94,63 @@ app.get('/api/test', async (req, res) => {
   }
 });
 
+
+// for the emissions calculations
+app.post('/api/calculate', (req, res) => {
+  try {
+    const electricityUsageKWh       = parseFloat(req.body.electricityUsageKWh)       || 0;
+    const kmDrivenPerMonth          = parseFloat(req.body.kmDrivenPerMonth)          || 0;
+    const naturalGasGJPerMonth      = parseFloat(req.body.naturalGasGJPerMonth)      || 0;
+    const caloriesPerDay            = parseFloat(req.body.caloriesPerDay)            || 0;
+    const dietaryChoice             = req.body.dietaryChoice                          || "Vegan";
+
+    // emission factors
+    const electricityFactor         = 0.49;     // kg CO2e per kWh
+    const transportationFactor      = 0.143;    // kg CO2e per km
+    const naturalGasFactor          = 50;       // kg CO2e per GJ
+    const kgCO2ePerYearFactor       = 12;       // convert monthly to yearly
+    const daysPerYear               = 365;
+
+    // dietary emissions per 1000 calories (kg CO2e)
+    const dietaryFactors = {
+      Vegan:        0.69,
+      Vegetarian:   1.16,
+      Pescatarian:  1.66,
+      Omnivore:     2.23
+    };
+
+    // emissions calculations
+    const electricityEmissions        = electricityUsageKWh * electricityFactor;
+    const transportationEmissions     = kmDrivenPerMonth * transportationFactor;
+    const naturalGasEmissions         = naturalGasGJPerMonth * naturalGasFactor;
+
+    const yearlyElectricityEmissions    = electricityEmissions * kgCO2ePerYearFactor;
+    const yearlyTransportationEmissions = transportationEmissions * kgCO2ePerYearFactor;
+    const yearlyNaturalGasEmissions     = naturalGasEmissions * kgCO2ePerYearFactor;
+
+    // dietary emissions based on kcal/day and type
+    const dietFactor = dietaryFactors[dietaryChoice] || 0;
+    const dietaryChoiceEmissions = (dietFactor * (caloriesPerDay / 1000)) * daysPerYear;
+
+    const totalYearlyEmissions =
+      yearlyElectricityEmissions +
+      yearlyTransportationEmissions +
+      yearlyNaturalGasEmissions +
+      dietaryChoiceEmissions;
+
+    res.json({
+      yearlyElectricityEmissions:    { value: yearlyElectricityEmissions,    unit: 'kgCO2e/year' },
+      yearlyTransportationEmissions: { value: yearlyTransportationEmissions, unit: 'kgCO2e/year' },
+      yearlyNaturalGasEmissions:     { value: yearlyNaturalGasEmissions,     unit: 'kgCO2e/year' },
+      dietaryChoiceEmissions:        { value: dietaryChoiceEmissions,        unit: 'kgCO2e/year' },
+      totalYearlyEmissions:          { value: totalYearlyEmissions,          unit: 'kgCO2e/year' }
+    });
+  } catch (err) {
+    console.error('Error in /api/calculate:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 // Start server after testing connection
 testDatabaseConnection().then(() => {
   const PORT = process.env.PORT || 5000;
