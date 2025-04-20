@@ -42,7 +42,7 @@ export const recordFootprint = async (req, res) => {
        (user_id, footprint) 
        VALUES ($1, $2) 
        RETURNING *`,
-      [userId, footprint]
+      [userId, parseFloat(footprint)]
     );
     res.status(201).json(result.rows[0]);
   } catch (err) {
