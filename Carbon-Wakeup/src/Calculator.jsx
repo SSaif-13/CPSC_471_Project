@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Bar } from 'react-chartjs-2';
 import { Chart, registerables } from 'chart.js';
 import './Calculator.css';
-
 
 Chart.register(...registerables);
 
@@ -16,6 +15,22 @@ const Calculator = () => {
     dietaryChoice: "Vegan",
   });
   const [result, setResult] = useState(null);
+  const [showSaveButton, setShowSaveButton] = useState(false);
+  const [calculationHistory, setCalculationHistory] = useState([]);
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
+
+  // Check if user is logged in on component mount
+  useEffect(() => {
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      const parsedUser = JSON.parse(userData);
+      setUser(parsedUser);
+      fetchCalculationHistory(parsedUser.userId);
+    }
+  }, []);
+
+  // Chart data setup
   const [chartData, setChartData] = useState({
     labels: ["Electricity", "Driving", "Natural Gas", "Dietary Choice"],
     datasets: [
@@ -51,6 +66,20 @@ const Calculator = () => {
     scales: { y: { beginAtZero: true } },
   };
 
+  const fetchCalculationHistory = async (userId) => {
+    if (!userId) return;
+    
+    try {
+      const response = await fetch(`/api/footprint/${userId}`);
+      const data = await response.json();
+      if (response.ok) {
+        setCalculationHistory(data);
+      }
+    } catch (error) {
+      console.error('Error fetching calculation history:', error);
+    }
+  };
+
   const handleChange = (e) => {
     const { name, value, type } = e.target;
     setFormData(prev => ({
@@ -69,39 +98,58 @@ const Calculator = () => {
       });
       const data = await response.json();
       setResult(data);
-      setChartData({
-        labels: ["Electricity", "Driving", "Natural Gas", "Dietary Choice"],
+      setShowSaveButton(true);
+      
+      // Update chart data
+      setChartData(prev => ({
+        ...prev,
         datasets: [
           {
-            label: "CO2 Emissions (kgCO2e/year)",
+            ...prev.datasets[0],
             data: [
               data.yearlyElectricityEmissions.value,
               data.yearlyTransportationEmissions.value,
               data.yearlyNaturalGasEmissions.value,
               data.dietaryChoiceEmissions.value,
-            ],
-            backgroundColor: [
-              "rgba(255, 99, 132, 0.6)",
-              "rgba(54, 162, 235, 0.6)",
-              "rgba(255, 206, 86, 0.6)",
-              "rgba(153, 102, 255, 0.6)",
-              "rgba(75, 192, 192, 0.6)",
-            ],
-            borderColor: [
-              "rgba(255, 99, 132, 1)",
-              "rgba(54, 162, 235, 1)",
-              "rgba(255, 206, 86, 1)",
-              "rgba(153, 102, 255, 1)",
-              "rgba(75, 192, 192, 1)",
-            ],
-            borderWidth: 1,
-          },
-        ],
-      });
+            ]
+          }
+        ]
+      }));
     } catch (error) {
       console.error("Error submitting form:", error);
     }
   };
+
+  const handleSave = async () => {
+    if (!user) {
+      alert('Please log in to save your calculation');
+      navigate('/login');
+      return;
+    }
+  
+    try {
+      const response = await fetch("/api/footprint", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: user.userId,
+          footprint: result.totalYearlyEmissions.value.toFixed(2) // Save the total
+        }),
+      });
+  
+      if (response.ok) {
+        const savedData = await response.json();
+        setCalculationHistory(prev => [savedData, ...prev]);
+        alert('Saved your data!');
+        setShowSaveButton(false);
+      } else {
+        throw new Error('Failed to save calculation');
+      }
+    } catch (error) {
+      console.error('Error saving calculation:', error);
+      alert('Failed to save your calculation. Please try again.');
+    }
+  };;
 
   const generateSuggestions = (result) => {
     const suggestions = [];
@@ -167,9 +215,6 @@ const Calculator = () => {
     return suggestions;
   };
 
-  
-
-
   return (
     <div>
       {/* Navigation */}
@@ -178,20 +223,11 @@ const Calculator = () => {
           <h1 className="navbar-brand">Carbon Footprint Calculator</h1>
           <div className="navigation">
             <ul className="unordered-list">
-              <li>
-                <Link to="/">Homepage</Link>
-              </li>
-              <li>
-                <Link to="/about">About Us</Link>
-              </li>
-              <li> <Link to="/compare"> Compare Carbon Emissions </Link> </li>
-
-              <li>
-                <Link to="/donate">Donate</Link>
-              </li>
-              <li>
-                <Link to="/login">Login</Link>
-              </li>
+              <li><Link to="/">Homepage</Link></li>
+              <li><Link to="/about">About Us</Link></li>
+              <li><Link to="/compare">Compare Carbon Emissions</Link></li>
+              <li><Link to="/donate">Donate</Link></li>
+              <li><Link to="/login">Login</Link></li>
             </ul>
           </div>
         </div>
@@ -199,6 +235,8 @@ const Calculator = () => {
 
       {/* Calculator Content */}
       <div className="calculator-content">
+    
+
         {/* Form */}
         <div className="calculator-form-section">
           <h1 className="form-title">Calculate Your Emissions</h1>
@@ -246,40 +284,82 @@ const Calculator = () => {
                 <option value="Omnivore">Omnivore</option>
               </select>
             </div>
-
+            
             <button type="submit" className="submit-button">Calculate</button>
+            {showSaveButton && (
+              <button 
+                type="button" 
+                className="save-button"
+                onClick={handleSave}
+              >
+                {user ? "Save Calculation" : "Log In to Save"}
+              </button>
+            )}
           </form>
         </div>
 
         {/* Results */}
         <div className="results-section">
           <h1 className="results-title">Yearly Emissions Statistics</h1>
-          <div className="calculator-chart"><Bar data={chartData} options={chartOptions} /></div>
+          <div className="calculator-chart">
+            <Bar data={chartData} options={chartOptions} />
+          </div>
           
           {result && (
-            <div className="results-details">
-              <p>Electricity: {result.yearlyElectricityEmissions.value.toFixed(2)} {result.yearlyElectricityEmissions.unit}</p>
-              <p>Driving: {result.yearlyTransportationEmissions.value.toFixed(2)} {result.yearlyTransportationEmissions.unit}</p>
-              <p>Natural Gas: {result.yearlyNaturalGasEmissions.value.toFixed(2)} {result.yearlyNaturalGasEmissions.unit}</p>
-              <p>Dietary: {result.dietaryChoiceEmissions.value} {result.dietaryChoiceEmissions.unit}</p>
-              <p className="total-emissions">TOTAL: {result.totalYearlyEmissions.value.toFixed(2)} {result.totalYearlyEmissions.unit}</p>
+            <>
+              <div className="results-details">
+                <p>Electricity: {result.yearlyElectricityEmissions.value.toFixed(2)} {result.yearlyElectricityEmissions.unit}</p>
+                <p>Driving: {result.yearlyTransportationEmissions.value.toFixed(2)} {result.yearlyTransportationEmissions.unit}</p>
+                <p>Natural Gas: {result.yearlyNaturalGasEmissions.value.toFixed(2)} {result.yearlyNaturalGasEmissions.unit}</p>
+                <p>Dietary: {result.dietaryChoiceEmissions.value} {result.dietaryChoiceEmissions.unit}</p>
+                <p className="total-emissions">TOTAL: {result.totalYearlyEmissions.value.toFixed(2)} {result.totalYearlyEmissions.unit}</p>
 
-              {/* Suggestions */}
-              <div className="suggestions-section">
-                <h2 className="suggestions-title">Suggestions for Improvement</h2>
-                {generateSuggestions(result).map((suggestion, index) => (
-                  <div key={index} className="suggestion-card">
-                    <h3 className="suggestion-category">{suggestion.category}</h3>
-                    <p className="suggestion-message">{suggestion.message}</p>
-                    <ul className="suggestion-tips">
-                      {suggestion.tips.map((tip, tipIndex) => (
-                        <li key={tipIndex}>{tip}</li>
+                {/* Suggestions */}
+                <div className="suggestions-section">
+                  <h2 className="suggestions-title">Suggestions for Improvement</h2>
+                  {generateSuggestions(result).map((suggestion, index) => (
+                    <div key={index} className="suggestion-card">
+                      <h3 className="suggestion-category">{suggestion.category}</h3>
+                      <p className="suggestion-message">{suggestion.message}</p>
+                      <ul className="suggestion-tips">
+                        {suggestion.tips.map((tip, tipIndex) => (
+                          <li key={tipIndex}>{tip}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Calculation History - only shown for logged-in users */}
+              {user && (
+                <div className="history-section">
+                  <h2 className="history-title">Your Calculation History</h2>
+                  {calculationHistory.length > 0 ? (
+                    <ul className="history-list">
+                      {calculationHistory.map((item, index) => (
+                        <li key={index} className="history-item">
+                          <div className="history-date">
+                            {new Date(item.measurement_date).toLocaleDateString()}
+                          </div>
+                          <div className="history-total">
+                            Total: {item.footprint} kgCO2e
+                          </div>
+                          {/* We can implement this if we put all the individual calculations */}
+                          {/* <div className="history-details">
+                            <span>Electricity: {item.footprint.yearlyElectricityEmissions.value.toFixed(2)}</span>
+                            <span>Driving: {item.footprint.yearlyTransportationEmissions.value.toFixed(2)}</span>
+                            <span>Gas: {item.footprint.yearlyNaturalGasEmissions.value.toFixed(2)}</span>
+                          </div> */}
+                        </li>
                       ))}
                     </ul>
-                  </div>
-                ))}
-              </div>
-            </div>
+                  ) : (
+                    <p className="no-history">No calculation history yet</p>
+                  )}
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>

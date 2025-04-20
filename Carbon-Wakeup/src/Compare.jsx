@@ -3,17 +3,33 @@ import LineGraph from './LineGraph.jsx';
 import './Compare.css';
 import { Link } from 'react-router-dom';
 
-const Compare = ({ data }) => {
+const Compare = () => {
   // number of lines for the graph from 1 to 5
   const [numberOfLines, setNumberOfLines] = useState(1);
   // selected country codes
   const [selectedCountries, setSelectedCountries] = useState(['OWID_WRL']);
   // in case of error messages
   const [errorMsg, setErrorMsg] = useState('');
+  // data from database
+  const [data, setData] = useState([]);
+
+  // fetch data from database
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('/api/emissions');
+        const result = await response.json();
+        setData(result);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+    fetchData();
+  }, []);
 
   // list of unique countries
   const countryOptions = Array.from(
-    new Map(data.map(entry => [entry.Code, entry.Country])).entries()
+    new Map(data.map(entry => [entry.code, entry.country])).entries()
   ).map(([code, name]) => ({ code, name }));
 
   // adjusting the selectedCountries length if the number of lines for the graph changes
@@ -54,10 +70,10 @@ const Compare = ({ data }) => {
     .filter(code => code !== '')
     .map(code => {
       const filteredData = data
-        .filter(entry => entry.Code === code && entry.Year)
-        .sort((a, b) => Number(a.Year) - Number(b.Year));
+        .filter(entry => entry.code === code && entry.year)
+        .sort((a, b) => Number(a.year) - Number(b.year));
       const countryName =
-        filteredData[0]?.Country ||
+        filteredData[0]?.country ||
         (countryOptions.find(option => option.code === code)?.name || code);
       return { code, countryName, filteredData };
     });

@@ -3,6 +3,7 @@ import express from 'express';
 import pkg from 'pg';
 const { Pool } = pkg;
 import cors from 'cors';
+import router from './routes/index.js';
 
 const app = express();
 app.use(cors());
@@ -63,39 +64,10 @@ async function testDatabaseConnection() {
   }
 }
 
-// API endpoint for manual testing
-app.get('/api/test', async (req, res) => {
-  console.log('\n=== /api/test endpoint called ===');
-  let client;
-  try {
-    client = await pool.connect();
-    const result = await client.query('SELECT NOW()');
-    res.json({
-      status: 'success',
-      time: result.rows[0].now,
-      database: process.env.DB_NAME,
-      message: 'Database connection successful'
-    });
-  } catch (err) {
-    console.error('Endpoint error:', err);
-    res.status(500).json({
-      status: 'error',
-      error: err.message,
-      details: {
-        config: {
-          host: process.env.DB_HOST,
-          user: process.env.DB_USER,
-          database: process.env.DB_NAME
-        }
-      }
-    });
-  } finally {
-    if (client) client.release();
-  }
-});
+// Mount the router under /api prefix
+app.use('/api', router);
 
-
-// for the emissions calculations
+// Calculate API call
 app.post('/api/calculate', (req, res) => {
   try {
     const electricityUsageKWh = parseFloat(req.body.electricityUsageKWh) || 0;
@@ -218,6 +190,7 @@ testDatabaseConnection().then(() => {
   const PORT = process.env.PORT || 5000;
   app.listen(PORT, () => {
     console.log(`\nServer running on port ${PORT}`);
-    console.log(` Test endpoint available at http://localhost:${PORT}/api/test`);
+    console.log(`Test endpoint available at http://localhost:${PORT}/api/test`);
+    console.log(`API routes available under http://localhost:${PORT}/api`);
   });
 });
