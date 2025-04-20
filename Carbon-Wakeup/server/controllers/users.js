@@ -113,3 +113,22 @@ export const deleteUser = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+// Get type of user
+export const getUserType = async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const result = await pool.query(
+        'SELECT user_type FROM users.user_accounts WHERE user_id = $1',
+        [userId]
+      );
+      
+      if (result.rows.length === 0) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+      
+      res.json({ user_type: result.rows[0].user_type });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  };

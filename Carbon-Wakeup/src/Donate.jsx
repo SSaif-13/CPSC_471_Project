@@ -105,13 +105,19 @@ const Donate = ({user_Id}) => {
 
               <label>
                 Organization:
-                <input 
-                  type="text"
+                <select
                   name="organization"
                   value={donation_Data.organization}
                   onChange={change_Handle}
                   required
-                />
+                >
+                  <option value="" disabled>Select an organization</option>
+                  <option value="Clean Air Task Force">Clean Air Task Force</option>
+                  <option value="Carbon180">Carbon180</option>
+                  <option value="The Climate Reality Project">The Climate Reality Project</option>
+                  <option value="Project Drawdown">Project Drawdown</option>
+                  <option value="Rainforest Foundation US">Rainforest Foundation US</option>
+                </select>
               </label>
 
               {/* Show User ID */}

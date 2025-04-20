@@ -11,7 +11,8 @@ import {
   createUser,
   setPassword,
   verifySignIn,
-  deleteUser
+  deleteUser,
+  getUserType
 } from '../controllers/users.js';
 import {
   recordDonation,
@@ -35,6 +36,7 @@ router.post('/users', createUser);
 router.post('/users/password', setPassword);
 router.post('/users/signin', verifySignIn);
 router.delete('/users/:userId', deleteUser);
+router.get('/users/:userId/type', getUserType);
 
 // Activity routes
 router.post('/donations', recordDonation);
