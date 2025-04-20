@@ -35,14 +35,14 @@ const LineGraph = ({ multiSelectedData }) => {
     // all the country's datasets will have the same years
     // using the first country's data which is world data
     const labels =
-        multiSelectedData[0]?.filteredData.map(entry => entry.Year) || [];
+        multiSelectedData[0]?.filteredData.map(entry => entry.year) || [];
 
     // building an array of datasets one for each of the selected countries
 
     const datasets = multiSelectedData.map((countryData, index) => ({
         label: countryData.countryName + ' Emissions',
         data: countryData.filteredData.map(entry =>
-            Number(entry['Annual CO2 emissions'])
+            Number(entry['annual_co2_emissions'])
         ),
         borderColor: colors[index].border,
         backgroundColor: colors[index].background,
