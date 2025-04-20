@@ -13,7 +13,7 @@ const FrontPage = () => {
 
                     <div className="navigation">
                         <ul className="unordered-list">
-                            <li> <Link to="/about"> About Us </Link> </li>
+                            <li> <Link to="/admin"> Admin </Link> </li>
 
                             <li> <Link to="/compare"> Compare Carbon Emissions </Link> </li>
 

@@ -8,6 +8,7 @@ import Compare from './Compare.jsx';
 import Calculator from './Calculator.jsx';
 import Donate from './Donate.jsx';
 import Login from './Login.jsx';
+import Admin from './Admin.jsx'
 
 function App() {
   const [data, setData] = useState([]);
@@ -29,7 +30,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<FrontPage />} />
-          <Route path="/about" element={<AboutUs />} />
+          <Route path="/admin" element={<Admin />} />
           <Route path="/compare" element={<Compare data={data} />} />
           <Route path="/calculator" element={<Calculator />} />
           <Route path="/donate" element={<Donate />} />
