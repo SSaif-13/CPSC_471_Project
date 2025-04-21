@@ -40,12 +40,14 @@ const Login = () => {
       }
 
       if (data.authenticated) {
-        localStorage.setItem('user', JSON.stringify(data.user));
-        const userType = data.user.userType.toLowerCase();
-        if (userType === 'admin') {
-          navigate('/admin');
+        // Prevent disabled users from logging in
+        if (data.user.disabled) {
+          setError('Your account has been disabled. Please contact an administrator.'); 
         } else {
-          navigate('/');
+          localStorage.setItem('user', JSON.stringify(data.user));
+          const userType = data.user.userType.toLowerCase();
+          if (userType === 'admin') navigate('/admin');
+          else navigate('/');
         }
       } else {
         setError(data.error || 'Invalid email or password');

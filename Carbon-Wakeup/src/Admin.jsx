@@ -40,6 +40,29 @@ const Admin = () => {
         loadUsers();
     }, []);
 
+   // Toggle disabled status by repurposing user_type
+  const handleCheckboxChange = async (userId) => {
+    const target = users.find(u => u.id === userId);
+    if (!target) return;
+    const newDisabled = !target.disabled;
+    const newType = newDisabled ? 'disabled' : 'regular';
+    try {
+      await fetch(`/api/users/${userId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_type: newType }),
+      });
+      setUsers(current =>
+        current.map(u =>
+          u.id === userId
+            ? { ...u, user_type: newType, disabled: newDisabled }
+            : u
+        )
+      );
+    } catch (err) {
+      console.error('Failed to update user status', err);
+    }
+  };
 
     return (
         <div className="Admin-container">
@@ -98,7 +121,7 @@ const Admin = () => {
                                                 <td>
                                                     <input
                                                         type="checkbox"
-                                                        checked={u.disabled}
+                                                        checked={!!u.disabled}
                                                         onChange={() => handleCheckboxChange(u.id)}
                                                     />
                                                 </td>

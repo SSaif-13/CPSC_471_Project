@@ -153,6 +153,32 @@ app.get('/api/users', async (req, res) => {
   }
 });
 
+// toggle disabled flag
+app.patch('/api/users/:id', async (req, res) => {
+  let client;
+  try {
+    const { id } = req.params;
+    const { user_type } = req.body;
+    if (!['regular','disabled','admin'].includes(user_type)) {
+      return res.status(400).json({ error: 'Invalid user_type' });
+    }
+
+    client = await pool.connect();
+    await client.query(
+      `UPDATE users.user_accounts
+         SET user_type = $1
+       WHERE user_id = $2`,
+      [user_type, id]
+    );
+
+    res.sendStatus(200);
+  } catch (err) {
+    console.error(`PATCH /api/users/${req.params.id} error`, err);
+    res.status(500).json({ error: 'Failed to update user_type' });
+  } finally {
+    client?.release();
+  }
+});
 
 
 // Start server after testing connection
