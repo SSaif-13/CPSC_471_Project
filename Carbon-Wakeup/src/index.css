@@ -17,6 +17,9 @@
   position: relative;
 }
 
+.dropdown-btn {
+  font-weight: 500;
+}
 
 .profile-dropdown .dropdown-content {
   display: none;
