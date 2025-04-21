@@ -21,7 +21,7 @@ console.log('Environment Variables:', {
 const pool = new Pool({
   user: process.env.DB_USER,
   host: process.env.DB_HOST,
-  database: 'postgres', // Connect to default DB
+  database: process.env.DB_NAME, // Connect to default DB
   password: process.env.DB_PASSWORD,
   port: process.env.DB_PORT,
   ssl: { rejectUnauthorized: false },
@@ -152,36 +152,6 @@ app.get('/api/users', async (req, res) => {
     client && client.release();
   }
 });
-
-
-// for disabling users
-// app.patch('/api/users/:id/disable', async (req, res) => {
-//   const { id } = req.params;
-//   let client;
-//   try {
-//     client = await pool.connect();
-//     // flip disabled boolean
-//     const update = await client.query(
-//       `UPDATE users.user_accounts
-//        SET disabled = NOT disabled, updated_at = NOW()
-//        WHERE user_id = $1
-//        RETURNING user_id AS id, disabled;`,
-//       [id]
-//     );
-//     res.json({ status: 'success', user: update.rows[0] });
-//   } catch (err) {
-//     console.error('PATCH /api/users/:id/disable error', err);
-//     res.status(500).json({ status: 'error', message: err.message });
-//   } finally {
-//     client && client.release();
-//   }
-// });
-
-// API for emission history for admin
-
-
-// API for donation history for admin
-
 
 
 

@@ -19,6 +19,9 @@ const Calculator = () => {
   const [calculationHistory, setCalculationHistory] = useState([]);
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+
 
   // Check if user is logged in on component mount
   useEffect(() => {
@@ -27,8 +30,16 @@ const Calculator = () => {
       const parsedUser = JSON.parse(userData);
       setUser(parsedUser);
       fetchCalculationHistory(parsedUser.userId);
+      setIsLoggedIn(true);
     }
   }, []);
+
+  // Sign out handler
+  const handleSignOut = () => {
+    localStorage.removeItem('user');
+    setIsLoggedIn(false);
+    navigate('/login');
+  };
 
   // Chart data setup
   const [chartData, setChartData] = useState({
@@ -68,7 +79,7 @@ const Calculator = () => {
 
   const fetchCalculationHistory = async (userId) => {
     if (!userId) return;
-    
+
     try {
       const response = await fetch(`/api/footprint/${userId}`);
       const data = await response.json();
@@ -99,7 +110,7 @@ const Calculator = () => {
       const data = await response.json();
       setResult(data);
       setShowSaveButton(true);
-      
+
       // Update chart data
       setChartData(prev => ({
         ...prev,
@@ -126,7 +137,7 @@ const Calculator = () => {
       navigate('/login');
       return;
     }
-  
+
     try {
       const response = await fetch("/api/footprint", {
         method: "POST",
@@ -136,7 +147,7 @@ const Calculator = () => {
           footprint: result.totalYearlyEmissions.value.toFixed(2) // Save the total
         }),
       });
-  
+
       if (response.ok) {
         const savedData = await response.json();
         setCalculationHistory(prev => [savedData, ...prev]);
@@ -224,10 +235,21 @@ const Calculator = () => {
           <div className="navigation">
             <ul className="unordered-list">
               <li><Link to="/">Homepage</Link></li>
-              <li><Link to="/about">About Us</Link></li>
+
               <li><Link to="/compare">Compare Carbon Emissions</Link></li>
               <li><Link to="/donate">Donate</Link></li>
-              <li><Link to="/login">Login</Link></li>
+              <li className="profile-dropdown">
+                <span className="dropdown-btn">Profile</span>
+                <div className="dropdown-content">
+                  {isLoggedIn ? (
+                    <span onClick={handleSignOut} style={{ cursor: 'pointer' }}>
+                      Sign Out
+                    </span>
+                  ) : (
+                    <Link to="/login">Login</Link>
+                  )}
+                </div>
+              </li>
             </ul>
           </div>
         </div>
@@ -235,7 +257,7 @@ const Calculator = () => {
 
       {/* Calculator Content */}
       <div className="calculator-content">
-    
+
 
         {/* Form */}
         <div className="calculator-form-section">
@@ -284,11 +306,11 @@ const Calculator = () => {
                 <option value="Omnivore">Omnivore</option>
               </select>
             </div>
-            
+
             <button type="submit" className="submit-button">Calculate</button>
             {showSaveButton && (
-              <button 
-                type="button" 
+              <button
+                type="button"
                 className="save-button"
                 onClick={handleSave}
               >
@@ -304,14 +326,14 @@ const Calculator = () => {
           <div className="calculator-chart">
             <Bar data={chartData} options={chartOptions} />
           </div>
-          
+
           {result && (
             <>
               <div className="results-details">
                 <p>Electricity: {result.yearlyElectricityEmissions.value.toFixed(2)} {result.yearlyElectricityEmissions.unit}</p>
                 <p>Driving: {result.yearlyTransportationEmissions.value.toFixed(2)} {result.yearlyTransportationEmissions.unit}</p>
                 <p>Natural Gas: {result.yearlyNaturalGasEmissions.value.toFixed(2)} {result.yearlyNaturalGasEmissions.unit}</p>
-                <p>Dietary: {result.dietaryChoiceEmissions.value} {result.dietaryChoiceEmissions.unit}</p>
+                <p>Dietary: {result.dietaryChoiceEmissions.value.toFixed(2)} {result.dietaryChoiceEmissions.unit}</p>
                 <p className="total-emissions">TOTAL: {result.totalYearlyEmissions.value.toFixed(2)} {result.totalYearlyEmissions.unit}</p>
 
                 {/* Suggestions */}

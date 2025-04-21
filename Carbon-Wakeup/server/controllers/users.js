@@ -20,7 +20,7 @@ export const createUser = async (req, res) => {
          (user_id, user_type, registration_date, email, name) 
          VALUES ($1, $2, CURRENT_DATE, $3, $4) 
          RETURNING *`,
-        [userId, userType, email]
+        [userId, userType, email, name]
       );
       
       // Set password

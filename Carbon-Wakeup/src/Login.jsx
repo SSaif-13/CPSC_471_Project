@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import './Login.css';
 
 const Login = () => {
+  const navigate = useNavigate();
   const [signIn, setSignIn] = useState(true);
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
@@ -12,6 +13,8 @@ const Login = () => {
   const [signupPassword, setSignupPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -29,16 +32,21 @@ const Login = () => {
           password: loginPassword
         }),
       });
-      
+
       const data = await response.json();
-      
+
       if (!response.ok) {
         throw new Error(data.error || 'Login failed');
       }
 
       if (data.authenticated) {
         localStorage.setItem('user', JSON.stringify(data.user));
-        window.location.href = '/';
+        const userType = data.user.userType.toLowerCase();
+        if (userType === 'admin') {
+          navigate('/admin');
+        } else {
+          navigate('/');
+        }
       } else {
         setError(data.error || 'Invalid email or password');
       }
@@ -56,7 +64,7 @@ const Login = () => {
 
     try {
       const userId = uuidv4(); // Generate UUID for user ID
-      
+
       const response = await fetch('/api/users', {
         method: 'POST',
         headers: {
@@ -93,7 +101,7 @@ const Login = () => {
 
       if (loginData.authenticated) {
         localStorage.setItem('user', JSON.stringify(loginData.user));
-        window.location.href = '/';
+        navigate('/');
       } else {
         setSignIn(true);
         setLoginEmail(signupEmail);
@@ -114,7 +122,6 @@ const Login = () => {
         <nav className="navigation">
           <ul className="nav-list">
             <li><Link to="/">Homepage</Link></li>
-            <li><Link to="/about">About Us</Link></li>
             <li><Link to="/compare">Compare Carbon Emissions</Link></li>
             <li><Link to="/calculator">Carbon Footprint Calculator</Link></li>
             <li><Link to="/donate">Donate</Link></li>
@@ -128,34 +135,34 @@ const Login = () => {
         <div className="signup-form-container">
           <form className="signup-form" onSubmit={handleSignup}>
             <h1>Create Account</h1>
-            <input 
-              className="signup-input" 
-              type="text" 
-              placeholder="Name" 
+            <input
+              className="signup-input"
+              type="text"
+              placeholder="Name"
               value={signupName}
               onChange={(e) => setSignupName(e.target.value)}
               required
             />
-            <input 
-              className="signup-input" 
-              type="email" 
-              placeholder="Email" 
+            <input
+              className="signup-input"
+              type="email"
+              placeholder="Email"
               value={signupEmail}
               onChange={(e) => setSignupEmail(e.target.value)}
               required
             />
-            <input 
-              className="signup-input" 
-              type="password" 
-              placeholder="Password" 
+            <input
+              className="signup-input"
+              type="password"
+              placeholder="Password"
               value={signupPassword}
               onChange={(e) => setSignupPassword(e.target.value)}
               minLength="6"
               required
             />
             {error && !signIn && <div className="error-message">{error}</div>}
-            <button 
-              className="signup-button" 
+            <button
+              className="signup-button"
               type="submit"
               disabled={isLoading}
             >
@@ -172,26 +179,26 @@ const Login = () => {
         <div className="login-form-container">
           <form className="login-form" onSubmit={handleLogin}>
             <h1>Sign in</h1>
-            <input 
-              className="login-input" 
-              type="email" 
-              placeholder="Email" 
+            <input
+              className="login-input"
+              type="email"
+              placeholder="Email"
               value={loginEmail}
               onChange={(e) => setLoginEmail(e.target.value)}
               required
             />
-            <input 
-              className="login-input" 
-              type="password" 
-              placeholder="Password" 
+            <input
+              className="login-input"
+              type="password"
+              placeholder="Password"
               value={loginPassword}
               onChange={(e) => setLoginPassword(e.target.value)}
               required
             />
             <a href="#" className="login-forgot-password">Forgot your password?</a>
             {error && signIn && <div className="error-message">{error}</div>}
-            <button 
-              className="login-button" 
+            <button
+              className="login-button"
               type="submit"
               disabled={isLoading}
             >

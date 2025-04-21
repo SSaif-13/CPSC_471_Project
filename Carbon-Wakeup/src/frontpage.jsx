@@ -1,8 +1,26 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import './frontpage.css';
 
 const FrontPage = () => {
+    const navigate = useNavigate();
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+    // check if a user is stored in localStorage
+    useEffect(() => {
+        const user = localStorage.getItem('user');
+        if (user) {
+            setIsLoggedIn(true);
+        }
+    }, []);
+
+    // Sign out handler
+    const handleSignOut = () => {
+        localStorage.removeItem('user');
+        setIsLoggedIn(false);
+        navigate('/login');
+    };
+
     return (
         <>
             <div>
@@ -13,7 +31,6 @@ const FrontPage = () => {
 
                     <div className="navigation">
                         <ul className="unordered-list">
-                            <li> <Link to="/admin"> Admin </Link> </li>
 
                             <li> <Link to="/compare"> Compare Carbon Emissions </Link> </li>
 
@@ -21,7 +38,18 @@ const FrontPage = () => {
 
                             <li> <Link to="/donate"> Donate </Link> </li>
 
-                            <li> <Link to="/login"> Login </Link> </li>
+                            <li className="profile-dropdown">
+                                <span className="dropdown-btn">Profile</span>
+                                <div className="dropdown-content">
+                                    {isLoggedIn ? (
+                                        <span onClick={handleSignOut} style={{ cursor: 'pointer' }}>
+                                            Sign Out
+                                        </span>
+                                    ) : (
+                                        <Link to="/login">Login</Link>
+                                    )}
+                                </div>
+                            </li>
                         </ul>
                     </div>
                 </div>

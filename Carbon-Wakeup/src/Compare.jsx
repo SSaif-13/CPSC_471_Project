@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import LineGraph from './LineGraph.jsx';
 import './Compare.css';
-import { Link } from 'react-router-dom';
+
 
 const Compare = () => {
   // number of lines for the graph from 1 to 5
@@ -12,6 +13,24 @@ const Compare = () => {
   const [errorMsg, setErrorMsg] = useState('');
   // data from database
   const [data, setData] = useState([]);
+
+  const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  // check if a user is stored in localStorage
+  useEffect(() => {
+    const user = localStorage.getItem('user');
+    if (user) {
+      setIsLoggedIn(true);
+    }
+  }, []);
+
+  // Sign out handler
+  const handleSignOut = () => {
+    localStorage.removeItem('user');
+    setIsLoggedIn(false);
+    navigate('/login');
+  };
 
   // fetch data from database
   useEffect(() => {
@@ -89,9 +108,7 @@ const Compare = () => {
               <li>
                 <Link to="/">Homepage</Link>
               </li>
-              <li>
-                <Link to="/about">About Us</Link>
-              </li>
+
 
               <li>
                 <Link to="/calculator">Carbon Footprint Calculator</Link>
@@ -99,8 +116,17 @@ const Compare = () => {
               <li>
                 <Link to="/donate">Donate</Link>
               </li>
-              <li>
-                <Link to="/login">Login</Link>
+              <li className="profile-dropdown">
+                <span className="dropdown-btn">Profile</span>
+                <div className="dropdown-content">
+                  {isLoggedIn ? (
+                    <span onClick={handleSignOut} style={{ cursor: 'pointer' }}>
+                      Sign Out
+                    </span>
+                  ) : (
+                    <Link to="/login">Login</Link>
+                  )}
+                </div>
               </li>
             </ul>
           </div>

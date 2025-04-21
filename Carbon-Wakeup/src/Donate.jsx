@@ -12,6 +12,8 @@ const Donate = () => {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   // Check if user is logged in on component mount
   useEffect(() => {
     const userData = localStorage.getItem('user');
@@ -46,7 +48,7 @@ const Donate = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!user) {
       alert('Please log in to make a donation');
       return;
@@ -99,14 +101,13 @@ const Donate = () => {
           <div className="navigation">
             <ul className="unordered-list">
               <li><Link to="/">Homepage</Link></li>
-              <li><Link to="/about">About Us</Link></li>
               <li><Link to="/compare">Compare Carbon Emissions</Link></li>
               <li><Link to="/calculator">Carbon Footprint Calculator</Link></li>
               <li><Link to="/login">Login</Link></li>
             </ul>
           </div>
         </div>
-        
+
         <div className="login-required">
           <h2>Please log in to make a donation</h2>
           <p>You need to be logged in to access the donation page.</p>
@@ -124,10 +125,20 @@ const Donate = () => {
         <div className="navigation">
           <ul className="unordered-list">
             <li><Link to="/">Homepage</Link></li>
-            <li><Link to="/about">About Us</Link></li>
             <li><Link to="/compare">Compare Carbon Emissions</Link></li>
             <li><Link to="/calculator">Carbon Footprint Calculator</Link></li>
-            <li><Link to="/login">Login</Link></li>
+            <li className="profile-dropdown">
+              <span className="dropdown-btn">Profile</span>
+              <div className="dropdown-content">
+                {isLoggedIn ? (
+                  <span onClick={handleSignOut} style={{ cursor: 'pointer' }}>
+                    Sign Out
+                  </span>
+                ) : (
+                  <Link to="/login">Login</Link>
+                )}
+              </div>
+            </li>
           </ul>
         </div>
       </div>

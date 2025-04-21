@@ -1,207 +1,157 @@
-  .calculator-content {
-    display: flex;
-    flex-direction: row;
-    gap: 3rem;
-    align-items: flex-start;
-    width: 100%;
-  }
-  
-  /* Form section */
-  .calculator-form-section {
-    flex: 1;
-  }
-  
-  .form-title {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-  }
-  
-  .calculator-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-  }
-  
-  .form-group {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .form-group label {
-    font-weight: 600;
-    margin-bottom: 0.25rem;
-  }
-  
-  .form-group span {
-    font-size: 0.9rem;
-    color: #444;
-    margin-bottom: 0.25rem;
-  }
-  
-  input[type="range"] {
-    width: 100%;
-  }
-  
-  select {
-    padding: 0.4rem;
-    font-size: 1rem;
-  }
-  
-  .submit-button {
-    margin-top: 1rem;
-    padding: 0.6rem 1.2rem;
-    font-size: 1rem;
-    background-color: #28a745;
-    border: none;
-    color: white;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-  }
-  
-  .submit-button:hover {
-    background-color: #218838;
-  }
-  
-  /* Results section stuff*/
-  .calculator-chart{
-    height: 500px;
-  }
+/* Main content */
+.calculator-content {
+  padding: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 2rem;
+}
 
-  .results-section {
-    flex: 1.2;
+/* Form section */
+.calculator-form-section {
+  flex: 1;
+  min-width: 300px;
+  background-color: #e6f4ea; /* changed from white */
+  padding: 2rem;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+}
+
+.form-title {
+  margin-bottom: 1rem;
+}
+
+.calculator-form .form-group {
+  margin-bottom: 1.5rem;
+}
+
+.calculator-form label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
+
+.calculator-form input[type="range"] {
+  width: 100%;
+  accent-color: var(--primary-green);
+}
+
+.calculator-form select {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: var(--border-radius);
+  background-color: var(--soft-gray);
+  color: black;
+}
+
+.submit-button,
+.save-button {
+  background-color: var(--primary-green);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  margin-top: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.submit-button:hover,
+.save-button:hover {
+  background-color: #1b5e20;
+}
+
+/* Results section */
+.results-section {
+  flex: 1;
+  min-width: 300px;
+  background-color: #e6f4ea; /* changed from white */
+  padding: 2rem;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+}
+
+.results-title {
+  margin-bottom: 1rem;
+}
+
+.results-details p {
+  margin: 0.5rem 0;
+}
+
+.total-emissions {
+  font-weight: bold;
+  font-size: 1.2rem;
+  margin-top: 1rem;
+  color: var(--primary-green);
+}
+
+/* Chart */
+.calculator-chart {
+  width: 100%;
+  height: 300px;
+  margin-bottom: 1rem;
+}
+
+/* Suggestions */
+.suggestions-section {
+  margin-top: 2rem;
+}
+
+.suggestions-title {
+  margin-bottom: 1rem;
+}
+
+.suggestion-card {
+  background-color: var(--soft-gray);
+  border-radius: var(--border-radius);
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: var(--shadow);
+}
+
+.suggestion-category {
+  margin: 0 0 0.5rem 0;
+  color: var(--primary-green);
+}
+
+.suggestion-tips {
+  padding-left: 1.2rem;
+  list-style-type: disc;
+}
+
+/* History section */
+.history-section {
+  margin-top: 2rem;
+}
+
+.history-title {
+  margin-bottom: 1rem;
+}
+
+.history-list {
+  list-style: none;
+  padding: 0;
+}
+
+.history-item {
+  background-color: var(--soft-gray);
+  border-radius: var(--border-radius);
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+  box-shadow: var(--shadow);
+  display: flex;
+  justify-content: space-between;
+}
+
+.history-date {
+  font-weight: bold;
+}
+
+@media screen and (max-width: 768px) {
+  .calculator-content {
+    flex-direction: column;
   }
-  
-  .results-title {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-  }
-  
-  .results-details {
-    margin-top: 1rem;
-    background-color: #f8f9fa;
-    padding: 1rem;
-    border-radius: 8px;
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
-  }
-  
-  .total-emissions {
-    font-weight: bold;
-    font-size: 1.1rem;
-    margin-top: 1rem;
-  }
-  
-  /* Suggestions */
-  .suggestions-section {
-    margin-top: 2rem;
-  }
-  
-  .suggestions-title {
-    font-size: 1.3rem;
-    margin-bottom: 0.5rem;
-  }
-  
-  .suggestion-card {
-    background-color: #fff;
-    border: 1px solid #ddd;
-    padding: 1rem;
-    margin-top: 1rem;
-    border-radius: 8px;
-  }
-  
-  .suggestion-category {
-    font-weight: bold;
-    margin-bottom: 0.3rem;
-  }
-  
-  .suggestion-message {
-    margin-bottom: 0.5rem;
-    color: #333;
-  }
-  
-  .suggestion-tips {
-    margin: 0;
-    padding-left: 1.2rem;
-  }
-  
-  .save-button {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-top: 10px;
-    width: 100%;
-  }
-  
-  .save-button:hover {
-    background-color: #45a049;
-  }
-  
-  .history-section {
-    margin-top: 30px;
-    padding: 20px;
-    background-color: #f8f9fa;
-    border-radius: 8px;
-  }
-  
-  .history-title {
-    color: #333;
-    margin-bottom: 15px;
-  }
-  
-  .history-list {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .history-item {
-    background: white;
-    padding: 15px;
-    margin-bottom: 10px;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  }
-  
-  .history-date {
-    font-weight: bold;
-    color: #555;
-  }
-  
-  .history-total {
-    font-size: 1.1em;
-    margin: 5px 0;
-    color: #2c3e50;
-  }
-  
-  .history-details {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.9em;
-    color: #666;
-  }
-  
-  .no-history {
-    color: #666;
-    text-align: center;
-  }
-  
-  .login-required {
-    text-align: center;
-    padding: 2rem;
-    margin: 2rem auto;
-    max-width: 500px;
-    background: #f8f9fa;
-    border-radius: 8px;
-  }
-  
-  .login-button {
-    display: inline-block;
-    padding: 0.5rem 1rem;
-    background: #4CAF50;
-    color: white;
-    text-decoration: none;
-    border-radius: 4px;
-    margin-top: 1rem;
-  }
+}
