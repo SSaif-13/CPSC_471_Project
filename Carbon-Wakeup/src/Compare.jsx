@@ -138,7 +138,7 @@ const Compare = () => {
       <h2></h2>
       <div className="controls">
         <div>
-          <label htmlFor="lineCountSelect">Number of Lines:</label>
+          <label htmlFor="lineCountSelect">Number of countries to comapre: </label>
           <select
             id="lineCountSelect"
             value={numberOfLines}
@@ -156,8 +156,7 @@ const Compare = () => {
             <select
               id={`countrySelect-${i}`}
               value={selectedCountries[i] || ''}
-              onChange={(e) => handleCountryChange(e, i)}
-            >
+              onChange={(e) => handleCountryChange(e, i)}>
               <option value="">--Select a country--</option>
               <option value="OWID_WRL">World</option>
               {countryOptions.map(({ code, name }) => (
@@ -172,7 +171,11 @@ const Compare = () => {
         {errorMsg && <p style={{ color: 'red' }}>{errorMsg}</p>}
       </div>
       <LineGraph multiSelectedData={multiSelectedData} />
-      {/* <p>Do we need to write anything for this?</p> */}
+      <p style={{ fontSize: '0.775rem', lineHeight: 1.4 }}> Original emissions data from:{' '}
+        <a href="https://ourworldindata.org/co2-emissions" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'underline', color: '#0066cc' }}>
+          Ritchie, Hannah, and Max Roser. “CO₂ Emissions.” Our World in Data, June 2020.</a>
+      </p>
+
     </div>
   );
 };

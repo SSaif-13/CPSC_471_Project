@@ -8,6 +8,30 @@ const Admin = () => {
     const navigate = useNavigate();
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+    // redirecting non-admin users to homepage
+    useEffect(() => {
+        const raw = localStorage.getItem('user');
+        if (raw) {
+            try {
+                const user = JSON.parse(raw);
+                const type = (user.userType || user.user_type || '').toString().toLowerCase();
+                if (type !== 'admin') {
+                    // redirect to home
+                    navigate('/');
+                } else {
+                    setIsLoggedIn(true);
+                }
+            } catch (err) {
+                // for malformed users clear and redirect
+                localStorage.removeItem('user');
+                navigate('/login');
+            }
+        } else {
+            // no user then redirect to login
+            navigate('/login');
+        }
+    }, [navigate]);
+
     // check if a user is stored in localStorage
     useEffect(() => {
         const user = localStorage.getItem('user');
@@ -40,29 +64,29 @@ const Admin = () => {
         loadUsers();
     }, []);
 
-   // Toggle disabled status by repurposing user_type
-  const handleCheckboxChange = async (userId) => {
-    const target = users.find(u => u.id === userId);
-    if (!target) return;
-    const newDisabled = !target.disabled;
-    const newType = newDisabled ? 'disabled' : 'regular';
-    try {
-      await fetch(`/api/users/${userId}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ user_type: newType }),
-      });
-      setUsers(current =>
-        current.map(u =>
-          u.id === userId
-            ? { ...u, user_type: newType, disabled: newDisabled }
-            : u
-        )
-      );
-    } catch (err) {
-      console.error('Failed to update user status', err);
-    }
-  };
+    // Toggle disabled status by repurposing user_type
+    const handleCheckboxChange = async (userId) => {
+        const target = users.find(u => u.id === userId);
+        if (!target) return;
+        const newDisabled = !target.disabled;
+        const newType = newDisabled ? 'disabled' : 'regular';
+        try {
+            await fetch(`/api/users/${userId}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ user_type: newType }),
+            });
+            setUsers(current =>
+                current.map(u =>
+                    u.id === userId
+                        ? { ...u, user_type: newType, disabled: newDisabled }
+                        : u
+                )
+            );
+        } catch (err) {
+            console.error('Failed to update user status', err);
+        }
+    };
 
     return (
         <div className="Admin-container">

@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import Papa from 'papaparse';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import FrontPage from './frontpage';
-import AboutUs from './AboutUs';
 import Compare from './Compare.jsx';
 import Calculator from './Calculator.jsx';
 import Donate from './Donate.jsx';

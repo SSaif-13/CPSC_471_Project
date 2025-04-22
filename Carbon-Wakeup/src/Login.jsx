@@ -42,7 +42,7 @@ const Login = () => {
       if (data.authenticated) {
         // Prevent disabled users from logging in
         if (data.user.disabled) {
-          setError('Your account has been disabled. Please contact an administrator.'); 
+          setError('Your account has been disabled. Please contact an administrator at admin@admin.com.');
         } else {
           localStorage.setItem('user', JSON.stringify(data.user));
           const userType = data.user.userType.toLowerCase();
@@ -197,7 +197,13 @@ const Login = () => {
               onChange={(e) => setLoginPassword(e.target.value)}
               required
             />
-            <a href="#" className="login-forgot-password">Forgot your password?</a>
+            <a href="#" className="login-forgot-password"
+              onClick={(e) => { e.preventDefault();
+                alert('Please contact the administrator to reset your password at admin@admin.com.');
+              }}
+            >
+              Forgot your password?
+            </a>
             {error && signIn && <div className="error-message">{error}</div>}
             <button
               className="login-button"
