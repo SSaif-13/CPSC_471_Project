@@ -110,7 +110,7 @@ If everything succeeds, you should see the following messages in the logs:
 ## Authors
 
 - [@SSaif-13](https://github.com/SSaif-13)
-- [@brandonn3883](https://github.com/brandon3883)
+- [@brandonn3883](https://github.com/brandonn3883)
 - [@akib-almahi](https://github.com/akib-almahi)
 
 
