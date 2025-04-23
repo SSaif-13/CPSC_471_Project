@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, {useState, useEffect, useContext} from 'react';
+import {Link, useNavigate} from 'react-router-dom';
+import {EmissionsUpdate} from './EmissionsUpdate.jsx';
 import './Admin.css';
 
 const Admin = () => {
@@ -7,6 +8,13 @@ const Admin = () => {
     const [loading, setLoading] = useState({ users: false, emissions: false, donations: false });
     const navigate = useNavigate();
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [emissions, setEmissions] = useState([]);
+    const [countryOptions, setCountryOptions] = useState([]);
+    const [yearOptions, setYearOptions] = useState([]);
+    const [selectedCountry, setSelectedCountry] = useState('');
+    const [selectedYear, setSelectedYear] = useState('');
+    const [emissionValue, setEmissionValue] = useState('');
+    const { refreshEmissions } = useContext(EmissionsUpdate);
 
     // redirecting non-admin users to homepage
     useEffect(() => {
@@ -54,7 +62,7 @@ const Admin = () => {
             try {
                 const res = await fetch('/api/users');
                 const json = await res.json();
-                setUsers(json.users || []);        // ← default to []
+                setUsers(json.users || []);        
             } catch {
                 setUsers([]);
             } finally {
@@ -87,6 +95,57 @@ const Admin = () => {
             console.error('Failed to update user status', err);
         }
     };
+
+
+    // Fetch emissions and  build country/year options
+    useEffect(() => {
+        async function loadEmissions() {
+            setLoading(l => ({ ...l, emissions: true }));
+            try {
+                const res = await fetch('/api/emissions');
+                const data = await res.json();
+                setEmissions(data || []);
+                // Extract unique countries and years
+                const countries = [...new Set((data || []).map(e => e.country))];
+                const years = [...new Set((data || []).map(e => e.year))];
+                setCountryOptions(countries.map(code => ({ code, name: code })));
+                setYearOptions(years);
+            } catch {
+                setEmissions([]);
+                setCountryOptions([]);
+                setYearOptions([]);
+            } finally {
+                setLoading(l => ({ ...l, emissions: false }));
+            }
+        }
+        loadEmissions();
+    }, []);
+
+
+    // Update emission for specific country and year
+    const handleEmissionUpdate = async () => {
+        if (!selectedCountry || !selectedYear || emissionValue === '') return;        try {
+          await fetch(`/api/emissions/${selectedCountry}/${selectedYear}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ annual_co2_emissions: emissionValue }),
+          });
+          
+          // Refresh data
+          refreshEmissions();
+          const res = await fetch('/api/emissions');
+          const updated = await res.json();
+          setEmissions(updated || []);
+          // Reset form fields
+          setSelectedCountry('');
+          setSelectedYear('');
+          setEmissionValue('');
+        } catch (err) {
+          console.error('Failed to update emissions', err);
+        }
+      };
+
+
 
     return (
         <div className="Admin-container">
@@ -156,6 +215,71 @@ const Admin = () => {
                             </tbody>
                         </table>
                     </div>
+
+                    {/* Emissions Table and Editor options */}
+                    <div className="admin-table-card">
+                        <h3 className="admin-editor">Emissions Editor</h3>
+                        {loading.emissions ? (
+                            <p className="admin-loading">Loading emissions...</p>
+                        ) : (
+                            <div className="admin-emission-editor">
+                                <label className="admin-select-country-label" htmlFor="admin-country-select">
+                                    Select Country:
+                                </label>
+                                <select
+                                    id="admin-country-select"
+                                    className="admin-select-country"
+                                    value={selectedCountry}
+                                    onChange={e => setSelectedCountry(e.target.value)}
+                                >
+                                    <option value="">--Select a country--</option>
+                                    {countryOptions.map(({ code, name }) => (
+                                        <option key={code} value={code}>
+                                            {name}
+                                        </option>
+                                    ))}
+                                </select>
+
+                                <label className="admin-select-year-label" htmlFor="admin-year-select">
+                                    Select Year:
+                                </label>
+                                <select
+                                    id="admin-year-select"
+                                    className="admin-select-year"
+                                    value={selectedYear}
+                                    onChange={e => setSelectedYear(e.target.value)}
+                                >
+                                    <option value="">--Select a year--</option>
+                                    {yearOptions.map(year => (
+                                        <option key={year} value={year}>
+                                            {year}
+                                        </option>
+                                    ))}
+                                </select>
+
+                                <label className="admin-emission-value-label" htmlFor="admin-emission-input">
+                                    New Emission Value:
+                                </label>
+                                <input
+                                    type="number"
+                                    id="admin-emission-input"
+                                    className="admin-input"
+                                    value={emissionValue}
+                                    onChange={e => setEmissionValue(e.target.value)}
+                                    placeholder="Enter value"
+                                />
+
+                                <button
+                                    className="admin-update-emission-btn"
+                                    onClick={handleEmissionUpdate}
+                                    disabled={!selectedCountry || !selectedYear || emissionValue === ''}
+                                >
+                                    Update Emissions
+                                </button>
+                            </div>
+                        )}
+                    </div>
+
 
 
                 </div>

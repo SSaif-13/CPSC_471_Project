@@ -12,8 +12,6 @@ const Donate = () => {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
   // Check if user is logged in on component mount
   useEffect(() => {
     const userData = localStorage.getItem('user');
@@ -61,6 +59,12 @@ const Donate = () => {
     }
 
     setShowConfirmation(true);
+  };
+
+  const handleSignOut = () => {
+    localStorage.removeItem('user');
+    setUser(null);
+    navigate('/login');
   };
 
   const confirmDonation = async () => {
@@ -130,13 +134,9 @@ const Donate = () => {
             <li className="profile-dropdown">
               <span className="dropdown-btn">Profile</span>
               <div className="dropdown-content">
-                {isLoggedIn ? (
-                  <span onClick={handleSignOut} style={{ cursor: 'pointer' }}>
-                    Sign Out
-                  </span>
-                ) : (
-                  <Link to="/login">Login</Link>
-                )}
+                <span onClick={handleSignOut} style={{ cursor: 'pointer' }}>
+                  Sign Out
+                </span>
               </div>
             </li>
           </ul>

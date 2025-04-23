@@ -42,7 +42,7 @@ const Login = () => {
       if (data.authenticated) {
         // Prevent disabled users from logging in
         if (data.user.disabled) {
-          setError('Your account has been disabled. Please contact an administrator at admin@admin.com.');
+          setError('Your account has been disabled. Please contact an administrator at sadat.saif@gmail.com');
         } else {
           localStorage.setItem('user', JSON.stringify(data.user));
           const userType = data.user.userType.toLowerCase();
@@ -199,7 +199,7 @@ const Login = () => {
             />
             <a href="#" className="login-forgot-password"
               onClick={(e) => { e.preventDefault();
-                alert('Please contact the administrator to reset your password at admin@admin.com.');
+                alert('Please contact the administrator to reset your password at sadat.test@gmail.com.');
               }}
             >
               Forgot your password?

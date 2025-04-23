@@ -81,3 +81,27 @@ export const getByCountryAndYear = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+
+// updating emission value for specific country/year
+export const updateEmission = async (req, res) => {
+  const { country, year } = req.params;
+  const { annual_co2_emissions } = req.body;  
+  try {
+    const result = await pool.query(
+      `UPDATE emissions.emissions_data 
+       SET annual_co2_emissions = $1 
+       WHERE country = $2 AND year = $3 
+       RETURNING *`,
+      [annual_co2_emissions, country, year]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Emission record not found' });
+    }
+    
+    res.json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};

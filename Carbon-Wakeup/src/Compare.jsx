@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import LineGraph from './LineGraph.jsx';
+import { EmissionsUpdate } from './EmissionsUpdate.jsx';
 import './Compare.css';
 
 
@@ -12,7 +13,7 @@ const Compare = () => {
   // in case of error messages
   const [errorMsg, setErrorMsg] = useState('');
   // data from database
-  const [data, setData] = useState([]);
+  //const [data, setData] = useState([]);
 
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -33,18 +34,20 @@ const Compare = () => {
   };
 
   // fetch data from database
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch('/api/emissions');
-        const result = await response.json();
-        setData(result);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-    fetchData();
-  }, []);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await fetch('/api/emissions');
+  //       const result = await response.json();
+  //       setData(result);
+  //     } catch (error) {
+  //       console.error('Error fetching data:', error);
+  //     }
+  //   };
+  //   fetchData();
+  // }, []);
+
+  const { emissions: data, refreshEmissions } = useContext(EmissionsUpdate);
 
   // list of unique countries
   const countryOptions = Array.from(
@@ -137,6 +140,10 @@ const Compare = () => {
       {/* <h2>Comparing Emissions</h2> */}
       <h2></h2>
       <div className="controls">
+        <div>
+          <button onClick={refreshEmissions} style={{ margin: '1rem 0' }}>
+            Refresh Emissions
+          </button></div>
         <div>
           <label htmlFor="lineCountSelect">Number of countries to comapre: </label>
           <select

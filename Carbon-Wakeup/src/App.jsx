@@ -8,6 +8,7 @@ import Calculator from './Calculator.jsx';
 import Donate from './Donate.jsx';
 import Login from './Login.jsx';
 import Admin from './Admin.jsx'
+import { EmissionsProvider } from './EmissionsUpdate.jsx'
 
 function App() {
   const [data, setData] = useState([]);
@@ -26,16 +27,18 @@ function App() {
   }, []);
   return (
     <>
+    <EmissionsProvider>
       <Router>
         <Routes>
           <Route path="/" element={<FrontPage />} />
           <Route path="/admin" element={<Admin />} />
-          <Route path="/compare" element={<Compare data={data} />} />
+          <Route path="/compare" element={<Compare/>} />
           <Route path="/calculator" element={<Calculator />} />
           <Route path="/donate" element={<Donate />} />
           <Route path="/login" element={<Login />} />
         </Routes>
       </Router>
+      </EmissionsProvider>
     </>
   )
 }

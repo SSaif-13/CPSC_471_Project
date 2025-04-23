@@ -1,5 +1,5 @@
 import React from 'react';
-// import './AboutUs.css'; need to create this
+// import './AboutUs.css'; need to create this.... nvm not using this
 import { Link } from 'react-router-dom';
 const AboutUs = () => {
   return (

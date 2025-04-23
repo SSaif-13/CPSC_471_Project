@@ -5,7 +5,8 @@ import {
   getEmissionsByCountry,
   compareYears,
   compareCountries,
-  getByCountryAndYear
+  getByCountryAndYear,
+  updateEmission
 } from '../controllers/emissions.js';
 import {
   createUser,
@@ -30,6 +31,7 @@ router.get('/emissions/country/:country', getEmissionsByCountry);
 router.get('/emissions/compare/years', compareYears);
 router.get('/emissions/compare/countries', compareCountries);
 router.get('/emissions/:country/:year', getByCountryAndYear);
+router.patch('/emissions/:country/:year', updateEmission);
 
 // User routes
 router.post('/users', createUser);

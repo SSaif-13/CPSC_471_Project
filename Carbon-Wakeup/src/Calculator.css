@@ -11,7 +11,7 @@
 .calculator-form-section {
   flex: 1;
   min-width: 300px;
-  background-color: #e6f4ea; /* changed from white */
+  background-color: #e6f4ea; 
   padding: 2rem;
   border-radius: var(--border-radius);
   box-shadow: var(--shadow);
@@ -67,7 +67,7 @@
 .results-section {
   flex: 1;
   min-width: 300px;
-  background-color: #e6f4ea; /* changed from white */
+  background-color: #e6f4ea; 
   padding: 2rem;
   border-radius: var(--border-radius);
   box-shadow: var(--shadow);

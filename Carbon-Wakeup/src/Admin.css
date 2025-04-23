@@ -84,6 +84,81 @@
     background-color: #2f8f4f;
 }
 
+
+/* Editor Container */
+.admin-emission-editor {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Labels for Selects and Input */
+.admin-select-country-label,
+.admin-select-year-label,
+.admin-emission-value-label {
+    font-weight: 500;
+    margin-bottom: 5px;
+    color: var(--text-dark);
+}
+
+/* Select Boxes */
+.admin-select-country,
+.admin-select-year {
+    padding: 10px;
+    border: 1px solid var(--light-green);
+    border-radius: 5px;
+    font-size: 1rem;
+    background-color: var(--white);
+    color: var(--text-dark);
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.admin-select-country:focus,
+.admin-select-year:focus {
+    border-color: var(--primary-green);
+}
+
+/* Input Field */
+.admin-input {
+    padding: 10px;
+    border: 1px solid var(--light-green);
+    border-radius: 5px;
+    font-size: 1rem;
+    color: var(--text-dark);
+    background-color: var(--white);
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.admin-input:focus {
+    border-color: var(--primary-green);
+}
+
+/* Update Emission Button */
+.admin-update-emission-btn {
+    padding: 12px 20px;
+    font-size: 1rem;
+    font-weight: 600;
+    background-color: var(--primary-green);
+    color: var(--white);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.admin-update-emission-btn:hover:not(:disabled) {
+    background-color: #2f8f4f;
+}
+
+.admin-update-emission-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+
+
 /* Responsive Design */
 @media screen and (max-width: 768px) {
     .admin-main-content {
