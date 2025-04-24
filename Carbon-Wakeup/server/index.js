@@ -77,7 +77,7 @@ app.post('/api/calculate', (req, res) => {
     const dietaryChoice = req.body.dietaryChoice || "Vegan";
 
     // emission factors
-    const electricityFactor = 0.49;     // kg CO2e per kWh
+    const electricityFactor = 0.470;     // kg CO2e per kWh
     const transportationFactor = 0.143;    // kg CO2e per km
     const naturalGasFactor = 50;       // kg CO2e per GJ
     const kgCO2ePerYearFactor = 12;       // convert monthly to yearly
